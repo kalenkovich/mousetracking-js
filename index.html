@@ -1,0 +1,28 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="mousetracking.js"></script>
+
+<button style="position: absolute; left: 50%; right: 50%; bottom: 0%; 
+               height:10%; width: 20%"
+		id="start">
+	Start
+</button>
+<button style="position: absolute; left: 80%; right: 0%; top: 0%;
+               height:20%; width: 20%"
+		id="right">
+	Right
+</button>
+
+<script>
+	$('#start').click(function(){
+		$(this).prop("disabled", true);
+		$('#right').prop("disabled", false);
+		mousetracking.start_tracking();
+		}
+	);
+	$('#right').click(function(){
+		$(this).prop("disabled", true);
+		$('#start').prop("disabled", false);
+		mousetracking.stop_tracking();
+		}
+	);	
+</script>
