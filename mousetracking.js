@@ -1,17 +1,25 @@
 var mousetracking = {
-	normalize_coordinates: function(x, y){
+	normalize_coordinates: function(coordinates){
 		// bottom center is (0,0), top right is (1, 1), top left is (-1,1)
-		width = $(window).width();
-		height = $(window).height();
-		x_normalized = x / width - 0.5;
-		y_normalized = 1- y / height;
+		coords = coordinates;
+		x_normalized = coords.x / coords.width - 0.5;
+		y_normalized = 1- coords.y / coords.height;
 		return [x_normalized, y_normalized];
-	}, 
+	},
 	
 	start_tracking: function(){
 		console.log('Started tracking');
+		mousetracking.trajectory = [];
 		$(document).mousemove(function(event){
-			console.log(mousetracking.normalize_coordinates(event.clientX, event.clientY));
+			coordinates = {
+				x: event.clientX,
+				y: event.clientY,
+				width: $(window).width(),
+				height: $(window).height()
+			}
+			mousetracking.trajectory.push(coordinates);
+			xy_normalized = mousetracking.normalize_coordinates(coordinates);
+			console.log(xy_normalized);
 		});
 	},
 	
