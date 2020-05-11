@@ -15,18 +15,23 @@
 </button>
 
 <script>
-	$('#start').click(function(){
-		$(this).prop("disabled", true);
-		$('#right').prop("disabled", false);
-		mousetracking.start_tracking();
-		}
-	);
-	$('#right').click(function(){
-		$(this).prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.stop_tracking();
-		}
-	);	
+	$( document ).ready(function() {
+		$('#start').click(function(){
+			$(this).prop("disabled", true);
+			$('#right').prop("disabled", false);
+			mousetracking.start_tracking();
+			}
+		);
+		$('#right').click(function(){
+			$(this).prop("disabled", true);
+			$('#start').prop("disabled", false);
+			mousetracking.stop_tracking();
+			}
+		);
+		fullscreen.enforce_fullscreen();
+	});
+
+
 </script>
 
 <!-- From solution here: https://stackoverflow.com/a/44328113/3042770 -->
