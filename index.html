@@ -13,6 +13,16 @@
 </button>
 
 <script>
-	$('#start').click(mousetracking.start_tracking);
-	$('#right').click(mousetracking.stop_tracking);
+	$('#start').click(function(){
+		$(this).prop("disabled", true);
+		$('#right').prop("disabled", false);
+		mousetracking.start_tracking();
+		}
+	);
+	$('#right').click(function(){
+		$(this).prop("disabled", true);
+		$('#start').prop("disabled", false);
+		mousetracking.stop_tracking();
+		}
+	);	
 </script>
