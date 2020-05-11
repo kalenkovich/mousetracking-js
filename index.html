@@ -1,5 +1,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="mousetracking.js"></script>
+<script src="fullscreen.js"></script>
+<link rel="stylesheet" type="text/css" href="fullscreen.css">
 
 <button style="position: absolute; left: 50%; right: 50%; bottom: 0%; 
                height:10%; width: 20%"
@@ -13,16 +15,31 @@
 </button>
 
 <script>
-	$('#start').click(function(){
-		$(this).prop("disabled", true);
-		$('#right').prop("disabled", false);
-		mousetracking.start_tracking();
-		}
-	);
-	$('#right').click(function(){
-		$(this).prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.stop_tracking();
-		}
-	);	
+	$( document ).ready(function() {
+		$('#start').click(function(){
+			$(this).prop("disabled", true);
+			$('#right').prop("disabled", false);
+			mousetracking.start_tracking();
+			}
+		);
+		$('#right').click(function(){
+			$(this).prop("disabled", true);
+			$('#start').prop("disabled", false);
+			mousetracking.stop_tracking();
+			}
+		);
+		fullscreen.enforce_fullscreen();
+	});
+
+
 </script>
+
+<!-- From solution here: https://stackoverflow.com/a/44328113/3042770 -->
+<div class="backdrop">
+  <div id="popdiv">
+	This experiment must be run in fullscreen mode.
+	<br>
+	To exit fullscreen mode, press ESC.
+    <button id="btn-go-fullscreen">Switch to fullscreen</button
+  </div>
+</div>
