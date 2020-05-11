@@ -1,5 +1,4 @@
 var fullscreen = {
-	
 	/* View in fullscreen */
 	open: function() {
 		var elem = document.documentElement;
@@ -42,20 +41,42 @@ var fullscreen = {
 		document.addEventListener("msfullscreenchange", fun);
 	},
 	
+	remove_event_listener: function(fun){
+		/* Standard syntax */
+		document.removeEventListener("fullscreenchange", fun);
+
+		/* Firefox */
+		document.removeEventListener("mozfullscreenchange", fun);
+
+		/* Chrome, Safari and Opera */
+		document.removeEventListener("webkitfullscreenchange", fun);
+
+		/* IE / Edge */
+		document.removeEventListener("msfullscreenchange", fun);
+	},
+	
 	ask_for_fullscreen: function(){
 		if (document.fullscreenElement !== null){return}
 		$(".backdrop").fadeTo(200, 1);
 		$("#btn-go-fullscreen").click(fullscreen.switch_to_fullscreen)
 	},
+	
+	hide_popup: function(){
+		$(".backdrop").fadeOut(200);
+	},
 		
 	switch_to_fullscreen: function(){
-		$(".backdrop").fadeOut(200);
+		fullscreen.hide_popup();
 		fullscreen.open();
 	},
 	
 	enforce_fullscreen: function(){
 		fullscreen.add_event_listener(fullscreen.ask_for_fullscreen);
 		fullscreen.ask_for_fullscreen();
-	}
+	},
 	
+	stop_enforcing_fullscreen: function(){
+		fullscreen.hide_popup();
+		fullscreen.remove_event_listener(fullscreen.ask_for_fullscreen);
+	},
 }
