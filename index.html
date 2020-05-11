@@ -1,3 +1,6 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="mousetracking.js"></script>
+
 <button style="position: absolute; left: 50%; right: 50%; bottom: 0%; 
                height:10%; width: 20%"
 		id="start">
@@ -8,3 +11,8 @@
 		id="right">
 	Right
 </button>
+
+<script>
+	$('#start').click(mousetracking.start_tracking);
+	$('#right').click(mousetracking.stop_tracking);
+</script>
