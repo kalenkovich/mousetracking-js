@@ -1,5 +1,4 @@
 var mousetracking = {
-	cursor_height: 20,
 	
 	normalize_coordinates: function(coordinates){
 		// bottom center is (0,0), top right is (1, 1), top left is (-1,1)
@@ -11,8 +10,8 @@ var mousetracking = {
 	
 	add_current_coordinates: function(event){
 		coordinates = {
-			x: mousetracking.cursor_position.x,
-			y: mousetracking.cursor_position.y,
+			x: fake_cursor.position.x,
+			y: fake_cursor.position.y,
 			width: $(window).width(),
 			height: $(window).height()
 		}
@@ -30,13 +29,35 @@ var mousetracking = {
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
-		mousetracking.turn_fake_cursor_on(mousetracking.add_current_coordinates);
+		fake_cursor.turn_on(mousetracking.add_current_coordinates);
 	},
 	
 	stop_tracking: function(){
 		$(document).unbind('mousemove', mousetracking.add_current_coordinates);
 		console.log('Stopped tracking');	
 		mousetracking.plot_trajectory();
+	},
+	
+	plot_trajectory: function(){
+		plotting.make_canvas();
+		for (coords of mousetracking.trajectory) {
+			plotting.add_point(coords.x, coords.y);
+		}
+	},
+	
+	reset: function(){
+		mousetracking.trajectory = [];
+		fake_cursor.turn_off();
+	}
+	
+}
+
+var fake_cursor = {
+	height: 20,
+	
+	add_event_listener: function(fun){
+		document.addEventListener('pointerlockchange', fun);
+		document.addEventListener('mozpointerlockchange', fun);
 	},
 	
 	lock_pointer: function(){
@@ -46,7 +67,7 @@ var mousetracking = {
 		doc_elem.requestPointerLock();
 	},
 	
-	add_cursor_image: function(){
+	draw: function(){
 		if ($('#cursor-img').length){
 			$('#cursor-img').get(0).style.visibility = 'visible';
 			return;
@@ -58,7 +79,7 @@ var mousetracking = {
 		// This makes the cursor invisible to document.elementFromPoint.
 		// Otherwise, it will just return the cursor image instead of the button.
 		cursor_img.style.pointerEvents = "none";
-		cursor_img.style.height = mousetracking.cursor_height + "px";
+		cursor_img.style.height = fake_cursor.height + "px";
 		cursor_img.style.position = "absolute";
 		cursor_img.style.left = "50%";
 		cursor_img.style.bottom = "0%";
@@ -68,18 +89,34 @@ var mousetracking = {
 	
 	mouseMoveCallback: null,
 	
-	turn_fake_cursor_on: function(mouseMoveCallback){
+	position: {x: $(window).width() / 2, y: $(window).height() - 20},
+
+	redraw: function(){
+		cursor_img = $('#cursor-img').get(0);
+		x = fake_cursor.position.x;
+		cursor_img.style.left = x + "px";
+		y = fake_cursor.position.y;
+		cursor_img.style.top = y + "px";
+	},
+	
+	let_user_click: function(){
+		// This is to avoid binding the function twice. I don't know a better way.
+		fake_cursor.stop_clicking_with();
+		window.addEventListener("mouseup", fake_cursor.click); 
+	},
+	
+	turn_on: function(mouseMoveCallback){
 		// mouseMoveCallback - function that will be bound to the `mousemove` event.
 		// We save it here so that we can unbind it later.
-		mousetracking.mouseMoveCallback = mouseMoveCallback;
-		mousetracking.reset_cursor_position();
-		mousetracking.lock_pointer();
-		mousetracking.add_event_listener(mousetracking.handle_pointer_unlocking);
-		mousetracking.add_cursor_image();
-		mousetracking.redraw_cursor();
-		mousetracking.let_user_move_cursor();
+		fake_cursor.mouseMoveCallback = mouseMoveCallback;
+		fake_cursor.reset_position();
+		fake_cursor.lock_pointer();
+		fake_cursor.add_event_listener(fake_cursor.handle_pointer_unlocking);
+		fake_cursor.draw();
+		fake_cursor.redraw();
+		fake_cursor.let_user_move();
 		$(document).mousemove(mouseMoveCallback);
-		mousetracking.let_user_click_with_fake_cursor();
+		fake_cursor.let_user_click();
 	},
 	
 	unlock_pointer: function(){
@@ -93,35 +130,27 @@ var mousetracking = {
 		document.removeEventListener('mozpointerlockchange', fun);
 	},
 	
-	hide_cursor_image: function(){
+	hide: function(){
 		cursor_img = $('#cursor-img').get(0);
-		cursor_img.style.visibility = 'hidden';
+		if (cursor_img){
+			cursor_img.style.visibility = 'hidden';
+		};
 	},
 	
-	turn_fake_cursor_off: function(){
-		$(document).unbind("mousemove", mousetracking.mouseMoveCallback);
-		mousetracking.mouseMoveCallback = null;
-		mousetracking.unlock_pointer();
-		mousetracking.remove_event_listener(mousetracking.handle_pointer_unlocking);
-		mousetracking.hide_cursor_image();
-		mousetracking.stop_moving_cursor();
+	turn_off: function(){
+		$(document).unbind("mousemove", fake_cursor.mouseMoveCallback);
+		fake_cursor.mouseMoveCallback = null;
+		fake_cursor.unlock_pointer();
+		fake_cursor.remove_event_listener(fake_cursor.handle_pointer_unlocking);
+		fake_cursor.hide();
+		fake_cursor.stop_moving();
 		
 	},
 	
-	cursor_position: {x: $(window).width() / 2, y: $(window).height() - 20},
-	
-	reset_cursor_position: function(){
-		position = mousetracking.cursor_position;
+	reset_position: function(){
+		position = fake_cursor.position;
 		position.x = $(window).width() / 2;
-		position.y = $(window).height() - mousetracking.cursor_height;
-	},
-	
-	redraw_cursor: function(){
-		cursor_img = $('#cursor-img').get(0);
-		x = mousetracking.cursor_position.x;
-		cursor_img.style.left = x + "px";
-		y = mousetracking.cursor_position.y;
-		cursor_img.style.top = y + "px";
+		position.y = $(window).height() - fake_cursor.height;
 	},
 	
 	bound_coordinates: function(x, y){
@@ -139,63 +168,39 @@ var mousetracking = {
 	
 	copy_mouse_movement: function(event){
 			
-		x = mousetracking.cursor_position.x += (event.movementX || event.originalEvent.movementX);
-		y = mousetracking.cursor_position.y += (event.movementY || event.originalEvent.movementY);
-		[x, y] = mousetracking.bound_coordinates(x, y);
+		x = fake_cursor.position.x += (event.movementX || event.originalEvent.movementX);
+		y = fake_cursor.position.y += (event.movementY || event.originalEvent.movementY);
+		[x, y] = fake_cursor.bound_coordinates(x, y);
 		
-		mousetracking.cursor_position.x = x;
-		mousetracking.cursor_position.y = y;
+		fake_cursor.position.x = x;
+		fake_cursor.position.y = y;
 		
-		mousetracking.redraw_cursor();	
+		fake_cursor.redraw();	
 		
 		console.log(x, y);
 	},
 	
-	stop_moving_cursor: function(){
-		$(document).unbind('mousemove', mousetracking.copy_mouse_movement);
+	stop_moving: function(){
+		$(document).unbind('mousemove', fake_cursor.copy_mouse_movement);
 	},
 	
-	let_user_move_cursor: function(){
+	let_user_move: function(){
 		// This is to avoid binding the function twice. I don't know a better way.
-		mousetracking.stop_moving_cursor();
-		$(document).mousemove(mousetracking.copy_mouse_movement);
+		fake_cursor.stop_moving();
+		$(document).mousemove(fake_cursor.copy_mouse_movement);
 	},
 	
-	click_with_fake_cursor: function(event){
-		pos = mousetracking.cursor_position;
+	click: function(event){
+		pos = fake_cursor.position;
 		var object_under_cursor = document.elementFromPoint(pos.x, pos.y);  
 		if (object_under_cursor !== null){
 			object_under_cursor.click();
 		}
 	},
 	
-	stop_clicking_with_fake_cursor(){
-		$(window).unbind('mouseup', mousetracking.click_with_fake_cursor);
+	stop_clicking_with(){
+		$(window).unbind('mouseup', fake_cursor.click);
 	},
-	
-	let_user_click_with_fake_cursor: function(){
-		// This is to avoid binding the function twice. I don't know a better way.
-		mousetracking.stop_clicking_with_fake_cursor();
-		window.addEventListener("mouseup", mousetracking.click_with_fake_cursor); 
-	},
-	
-	plot_trajectory: function(){
-		plotting.make_canvas();
-		for (coords of mousetracking.trajectory) {
-			plotting.add_point(coords.x, coords.y);
-		}
-	},
-	
-	add_event_listener: function(fun){
-		document.addEventListener('pointerlockchange', fun);
-		document.addEventListener('mozpointerlockchange', fun);
-	},
-	
-	reset: function(){
-		mousetracking.trajectory = [];
-		mousetracking.turn_fake_cursor_off();
-	}
-	
 }
 
 var plotting = {
