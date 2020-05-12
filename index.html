@@ -27,6 +27,12 @@
 		mousetracking.start_tracking();
 	}
 	
+	function abort_trial(){
+		$('#right').prop("disabled", true);
+		$('#start').prop("disabled", false);
+		mousetracking.reset();
+	};
+	
 	function stop_trial(){
 		$('#right').prop("disabled", true);
 		$('#start').prop("disabled", false);

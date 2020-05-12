@@ -21,10 +21,17 @@ var mousetracking = {
 		console.log(xy_normalized);
 	},
 	
+	handle_pointer_unlocking: function(){
+		if (document.pointerLockElement === null){
+			abort_trial();
+		};
+	},
+	
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
 		mousetracking.lock_pointer();
+		mousetracking.add_event_listener(mousetracking.handle_pointer_unlocking);
 		$(document).mousemove(mousetracking.add_current_coordinates);
 		mousetracking.add_cursor_image();
 		mousetracking.let_user_move_cursor();
@@ -112,7 +119,17 @@ var mousetracking = {
 		for (coords of mousetracking.trajectory) {
 			plotting.add_point(coords.x, coords.y);
 		}
+	},
+	
+	add_event_listener: function(fun){
+		document.addEventListener('pointerlockchange', fun);
+		document.addEventListener('mozpointerlockchange', fun);
+	},
+	
+	reset: function(){
+		mousetracking.trajectory = [];
 	}
+	
 }
 
 var plotting = {

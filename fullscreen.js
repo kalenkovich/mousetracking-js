@@ -70,13 +70,20 @@ var fullscreen = {
 		fullscreen.open();
 	},
 	
+	handle_exit: function(){
+		if (document.fullscreenElement === null){
+			abort_trial();
+			fullscreen.ask_for_fullscreen();
+		}
+	},
+	
 	enforce_fullscreen: function(){
-		fullscreen.add_event_listener(fullscreen.ask_for_fullscreen);
+		fullscreen.add_event_listener(fullscreen.handle_exit);
 		fullscreen.ask_for_fullscreen();
 	},
 	
 	stop_enforcing_fullscreen: function(){
 		fullscreen.hide_popup();
-		fullscreen.remove_event_listener(fullscreen.ask_for_fullscreen);
+		fullscreen.remove_event_listener(fullscreen.handle_exit);
 	},
 }
