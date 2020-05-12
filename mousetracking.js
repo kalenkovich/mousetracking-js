@@ -1,4 +1,6 @@
 var mousetracking = {
+	cursor_height: "20px",
+	
 	normalize_coordinates: function(coordinates){
 		// bottom center is (0,0), top right is (1, 1), top left is (-1,1)
 		coords = coordinates;
@@ -35,6 +37,18 @@ var mousetracking = {
                                       doc_elem.mozRequestPointerLock;
 		doc_elem.requestPointerLock();
 	},
+	
+	add_cursor_image: function(){
+		if ($('#cursor-img').length){return};
+		
+		var cursor_img = document.createElement("img");
+		cursor_img.src = "cursor.svg";
+		cursor_img.id = "cursor-img";
+		cursor_img.style.height = mousetracking.cursor_height;
+		cursor_img.style.position = "absolute";
+		cursor_img.style.left = "50%";
+		cursor_img.style.bottom = "0%";		
+		document.body.appendChild(cursor_img);
 	},
 	
 	plot_trajectory: function(){
