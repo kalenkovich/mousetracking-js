@@ -24,7 +24,11 @@ var mousetracking = {
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
+		mousetracking.lock_pointer();
 		$(document).mousemove(mousetracking.add_current_coordinates);
+		mousetracking.add_cursor_image();
+		mousetracking.let_user_move_cursor();
+		mousetracking.let_user_click_with_fake_cursor();
 	},
 	
 	stop_tracking: function(){
