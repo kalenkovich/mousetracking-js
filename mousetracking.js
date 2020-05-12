@@ -14,8 +14,8 @@ var mousetracking = {
 		mousetracking.trajectory = [];
 		$(document).mousemove(function(event){
 			coordinates = {
-				x: event.clientX,
-				y: event.clientY,
+				x: mousetracking.cursor_position.x,
+				y: mousetracking.cursor_position.y,
 				width: $(window).width(),
 				height: $(window).height()
 			}
