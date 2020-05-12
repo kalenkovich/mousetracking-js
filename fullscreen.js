@@ -58,7 +58,8 @@ var fullscreen = {
 	ask_for_fullscreen: function(){
 		if (document.fullscreenElement !== null){return}
 		$(".backdrop").fadeTo(200, 1);
-		$("#btn-go-fullscreen").click(fullscreen.switch_to_fullscreen)
+		$("#btn-go-fullscreen").off('click');
+		$("#btn-go-fullscreen").click(fullscreen.switch_to_fullscreen);
 	},
 	
 	hide_popup: function(){
