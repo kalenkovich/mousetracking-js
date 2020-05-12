@@ -44,6 +44,9 @@ var mousetracking = {
 		var cursor_img = document.createElement("img");
 		cursor_img.src = "cursor.svg";
 		cursor_img.id = "cursor-img";
+		// This makes the cursor invisible to document.elementFromPoint.
+		// Otherwise, it will just return the cursor image instead of the button.
+		cursor_img.style.pointerEvents = "none";
 		cursor_img.style.height = mousetracking.cursor_height + "px";
 		cursor_img.style.position = "absolute";
 		cursor_img.style.left = "50%";
@@ -66,6 +69,16 @@ var mousetracking = {
 			
 			console.log(x, y);
 		});
+	},
+	
+	let_user_click_with_fake_cursor: function(){
+		window.addEventListener("mouseup", function(event){
+			pos = mousetracking.cursor_position;
+			var object_under_cursor = document.elementFromPoint(pos.x, pos.y);  
+			if (object_under_cursor !== null){
+				object_under_cursor.click();
+			};
+		}) 
 	},
 	
 	plot_trajectory: function(){
