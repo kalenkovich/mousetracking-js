@@ -1,5 +1,5 @@
 var mousetracking = {
-	cursor_height: "20px",
+	cursor_height: 20,
 	
 	normalize_coordinates: function(coordinates){
 		// bottom center is (0,0), top right is (1, 1), top left is (-1,1)
@@ -44,11 +44,28 @@ var mousetracking = {
 		var cursor_img = document.createElement("img");
 		cursor_img.src = "cursor.svg";
 		cursor_img.id = "cursor-img";
-		cursor_img.style.height = mousetracking.cursor_height;
+		cursor_img.style.height = mousetracking.cursor_height + "px";
 		cursor_img.style.position = "absolute";
 		cursor_img.style.left = "50%";
 		cursor_img.style.bottom = "0%";		
 		document.body.appendChild(cursor_img);
+	},
+	
+	cursor_position: {x: $(window).width() / 2, y: $(window).height() - 20},
+	
+	let_user_move_cursor: function(){
+		$(document).mousemove(function(event){
+			cursor_img = $('#cursor-img').get(0);
+			mousetracking.cursor_position.x += (event.movementX || event.originalEvent.movementX);
+			mousetracking.cursor_position.y += (event.movementY || event.originalEvent.movementY);
+			
+			x = mousetracking.cursor_position.x;
+			y = mousetracking.cursor_position.y;
+			cursor_img.style.left = x + "px";
+			cursor_img.style.top = y + "px";	
+			
+			console.log(x, y);
+		});
 	},
 	
 	plot_trajectory: function(){
