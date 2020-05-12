@@ -30,12 +30,7 @@ var mousetracking = {
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
-		mousetracking.lock_pointer();
-		mousetracking.add_event_listener(mousetracking.handle_pointer_unlocking);
-		$(document).mousemove(mousetracking.add_current_coordinates);
-		mousetracking.add_cursor_image();
-		mousetracking.let_user_move_cursor();
-		mousetracking.let_user_click_with_fake_cursor();
+		mousetracking.turn_fake_cursor_on(mousetracking.add_current_coordinates);
 	},
 	
 	stop_tracking: function(){
@@ -65,6 +60,16 @@ var mousetracking = {
 		cursor_img.style.left = "50%";
 		cursor_img.style.bottom = "0%";		
 		document.body.appendChild(cursor_img);
+	},
+	
+	turn_fake_cursor_on: function(mouseMoveCallback){
+		// mouseMoveCallback - function that will be bound to the `mousemove` event.
+		mousetracking.lock_pointer();
+		mousetracking.add_event_listener(mousetracking.handle_pointer_unlocking);
+		mousetracking.add_cursor_image();
+		mousetracking.let_user_move_cursor();
+		$(document).mousemove(mouseMoveCallback);
+		mousetracking.let_user_click_with_fake_cursor();
 	},
 	
 	cursor_position: {x: $(window).width() / 2, y: $(window).height() - 20},
