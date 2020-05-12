@@ -29,6 +29,14 @@ var mousetracking = {
 		mousetracking.plot_trajectory();
 	},
 	
+	lock_pointer: function(){
+		doc_elem = document.documentElement;
+		doc_elem.requestPointerLock = doc_elem.requestPointerLock ||
+                                      doc_elem.mozRequestPointerLock;
+		doc_elem.requestPointerLock();
+	},
+	},
+	
 	plot_trajectory: function(){
 		plotting.make_canvas();
 		for (coords of mousetracking.trajectory) {
