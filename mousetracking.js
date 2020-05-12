@@ -64,15 +64,31 @@ var mousetracking = {
 	
 	turn_fake_cursor_on: function(mouseMoveCallback){
 		// mouseMoveCallback - function that will be bound to the `mousemove` event.
+		mousetracking.reset_cursor_position();
 		mousetracking.lock_pointer();
 		mousetracking.add_event_listener(mousetracking.handle_pointer_unlocking);
 		mousetracking.add_cursor_image();
+		mousetracking.redraw_cursor();
 		mousetracking.let_user_move_cursor();
 		$(document).mousemove(mouseMoveCallback);
 		mousetracking.let_user_click_with_fake_cursor();
 	},
 	
 	cursor_position: {x: $(window).width() / 2, y: $(window).height() - 20},
+	
+	reset_cursor_position: function(){
+		position = mousetracking.cursor_position;
+		position.x = $(window).width() / 2;
+		position.y = $(window).height() - mousetracking.cursor_height;
+	},
+	
+	redraw_cursor: function(){
+		cursor_img = $('#cursor-img').get(0);
+		x = mousetracking.cursor_position.x;
+		cursor_img.style.left = x + "px";
+		y = mousetracking.cursor_position.y;
+		cursor_img.style.top = y + "px";
+	},
 	
 	bound_coordinates: function(x, y){
 		// bound coordinates by the window sizeToContent
@@ -96,9 +112,7 @@ var mousetracking = {
 		mousetracking.cursor_position.x = x;
 		mousetracking.cursor_position.y = y;
 		
-		cursor_img = $('#cursor-img').get(0);
-		cursor_img.style.left = x + "px";
-		cursor_img.style.top = y + "px";	
+		mousetracking.redraw_cursor();	
 		
 		console.log(x, y);
 	},
