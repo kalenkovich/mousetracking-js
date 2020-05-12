@@ -9,24 +9,26 @@ var mousetracking = {
 		return [x_normalized, y_normalized];
 	},
 	
+	add_current_coordinates: function(event){
+		coordinates = {
+			x: mousetracking.cursor_position.x,
+			y: mousetracking.cursor_position.y,
+			width: $(window).width(),
+			height: $(window).height()
+		}
+		mousetracking.trajectory.push(coordinates);
+		xy_normalized = mousetracking.normalize_coordinates(coordinates);
+		console.log(xy_normalized);
+	},
+	
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
-		$(document).mousemove(function(event){
-			coordinates = {
-				x: mousetracking.cursor_position.x,
-				y: mousetracking.cursor_position.y,
-				width: $(window).width(),
-				height: $(window).height()
-			}
-			mousetracking.trajectory.push(coordinates);
-			xy_normalized = mousetracking.normalize_coordinates(coordinates);
-			console.log(xy_normalized);
-		});
+		$(document).mousemove(mousetracking.add_current_coordinates);
 	},
 	
 	stop_tracking: function(){
-		$(document).off('mousemove');
+		$(document).unbind('mousemove', mousetracking.add_current_coordinates);
 		console.log('Stopped tracking');	
 		mousetracking.plot_trajectory();
 	},
