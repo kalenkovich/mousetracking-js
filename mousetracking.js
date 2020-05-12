@@ -58,19 +58,39 @@ var mousetracking = {
 	
 	cursor_position: {x: $(window).width() / 2, y: $(window).height() - 20},
 	
+	bound_coordinates: function(x, y){
+		// bound coordinates by the window sizeToContent
+		width = $(window).width();
+		x = Math.max(x, 0);
+		x = Math.min(x, width);
+		
+		height = $(window).height();
+		y = Math.max(y, 0);
+		y = Math.min(y, height);
+		
+		return [x, y];
+	},
+	
+	copy_mouse_movement: function(event){
+			
+		x = mousetracking.cursor_position.x += (event.movementX || event.originalEvent.movementX);
+		y = mousetracking.cursor_position.y += (event.movementY || event.originalEvent.movementY);
+		[x, y] = mousetracking.bound_coordinates(x, y);
+		
+		mousetracking.cursor_position.x = x;
+		mousetracking.cursor_position.y = y;
+		
+		cursor_img = $('#cursor-img').get(0);
+		cursor_img.style.left = x + "px";
+		cursor_img.style.top = y + "px";	
+		
+		console.log(x, y);
+	},
+	
 	let_user_move_cursor: function(){
-		$(document).mousemove(function(event){
-			cursor_img = $('#cursor-img').get(0);
-			mousetracking.cursor_position.x += (event.movementX || event.originalEvent.movementX);
-			mousetracking.cursor_position.y += (event.movementY || event.originalEvent.movementY);
-			
-			x = mousetracking.cursor_position.x;
-			y = mousetracking.cursor_position.y;
-			cursor_img.style.left = x + "px";
-			cursor_img.style.top = y + "px";	
-			
-			console.log(x, y);
-		});
+		// This is to avoid binding the function twice. I don't know a better way.
+		$(document).unbind('mousemove', mousetracking.copy_mouse_movement);
+		$(document).mousemove(mousetracking.copy_mouse_movement);
 	},
 	
 	let_user_click_with_fake_cursor: function(){
