@@ -16,24 +16,32 @@
 
 <script>
 	$( document ).ready(function() {
-		$('#start').click(function(){
-			$(this).prop("disabled", true);
-			$('#right').prop("disabled", false);
-			mousetracking.start_tracking();
-			}
-		);
-		$('#right').click(function(){
-			$(this).prop("disabled", true);
-			$('#start').prop("disabled", false);
-			mousetracking.stop_tracking();
-			}
-		);
+		$('#start').click(function(){start_trial()});
+		$('#right').click(function(){stop_trial()});
 		fullscreen.enforce_fullscreen();
 	});
 	
+	function start_trial(){
+		$('#start').prop("disabled", true);
+		$('#right').prop("disabled", false);
+		mousetracking.start_tracking();
+	}
+	
+	function abort_trial(){
+		$('#right').prop("disabled", true);
+		$('#start').prop("disabled", false);
+		mousetracking.reset();
+	};
+	
+	function stop_trial(){
+		$('#right').prop("disabled", true);
+		$('#start').prop("disabled", false);
+		mousetracking.stop_tracking();	
+	}
+	
 	function debug() {
 	    fullscreen.stop_enforcing_fullscreen();
-	}	
+	}
 
 </script>
 
