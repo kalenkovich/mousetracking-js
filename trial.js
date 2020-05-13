@@ -1,7 +1,7 @@
 trial = {	
 	setup: function(){
 		$('#start').click(function(){trial.start()});
-		$('#right').click(function(){trial.stop()});
+		$('.response-div').click(function(){trial.stop()});
 		fullscreen.enforce_fullscreen();
 	},
 	
@@ -13,17 +13,19 @@ trial = {
 		frame.show();
 		audio.add();
 		audio.load();
+		response_options.add();
+		response_options.show();
 	},
 	
 	abort: function(){
-		$('#right').prop("disabled", true);
+		$('.response-div').prop("disabled", true);
 		$('#start').prop("disabled", false);
 		mousetracking.reset();
 		frame.hide();
 	},
 	
 	stop: function(){
-		$('#right').prop("disabled", true);
+		$('.response-div').prop("disabled", true);
 		$('#start').prop("disabled", false);
 		mousetracking.stop_tracking();	
 	},
@@ -47,7 +49,7 @@ frame = {
 	
 	add: function(){
 		if ($('#frame-div').length){return};
-		const div = document.createElement('div');
+		div = document.createElement('div');
 		div.style.visibility = 'hidden';
 		div.className = 'center-of-the-screen';
 		div.id = "frame-div";
@@ -113,4 +115,38 @@ audio = {
 		audio_element = $('#audio').get(0);
 		audio_element.play();
 	}
+}
+
+response_options = {
+	add_response: function(corner){
+		id = 'response-' + corner;
+		if ($('#' + id).length){return};
+		div = document.createElement('div');
+		div.className = 'response-div';
+		div.id = id;
+		cssText = "position: absolute; height:10vw; width: 10vw; top: 0%;";
+		cssText += "border: 3px solid black;";
+		if (corner == 'left'){
+			cssText += 'left: 0%;';
+		} else if (corner == 'right'){
+			cssText += 'right: 0%;';
+		}
+		div.style.cssText = cssText;
+		div.style.visibility = 'hidden';
+		document.body.appendChild(div);
+	},
+	
+	add: function(){
+		response_options.add_response('left');
+		response_options.add_response('right');
+	},
+	
+	show: function(){
+		$('.response-div').css('visibility', 'visible');
+	},
+	
+	hide: function(){
+		$('.response-div').css('visibility', 'hidden');
+	},
+	
 }
