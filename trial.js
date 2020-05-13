@@ -154,6 +154,10 @@ response_options = {
 		}
 		div.style.cssText = cssText;
 		div.style.visibility = 'hidden';
+		
+		// Add solid background
+		div.style.backgroundColor = 'white'
+		
 		document.body.appendChild(div);
 	},
 	
@@ -192,6 +196,9 @@ start_button = {
 		div.style.borderWidth = "3px";
 		div.style.borderStyle = 'solid'; 
 		div.style.borderColor = 'brown';
+		
+		// Add solid background
+		div.style.backgroundColor = 'white'
 		
 		div.style.visibility = 'hidden';
 		document.body.appendChild(div);
