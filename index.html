@@ -14,37 +14,6 @@
 	Right
 </button>
 
-<script>
-	$( document ).ready(function() {
-		$('#start').click(function(){start_trial()});
-		$('#right').click(function(){stop_trial()});
-		fullscreen.enforce_fullscreen();
-	});
-	
-	function start_trial(){
-		$('#start').prop("disabled", true);
-		$('#right').prop("disabled", false);
-		mousetracking.start_tracking();
-	}
-	
-	function abort_trial(){
-		$('#right').prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.reset();
-	};
-	
-	function stop_trial(){
-		$('#right').prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.stop_tracking();	
-	}
-	
-	function debug() {
-	    fullscreen.stop_enforcing_fullscreen();
-	}
-
-</script>
-
 <!-- From solution here: https://stackoverflow.com/a/44328113/3042770 -->
 <div class="backdrop">
   <div id="popdiv">
@@ -54,3 +23,5 @@
     <button id="btn-go-fullscreen">Switch to fullscreen</button
   </div>
 </div>
+
+<script src="trial.js" onload ="trial.setup()"></script>

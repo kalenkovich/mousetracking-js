@@ -73,7 +73,7 @@ var fullscreen = {
 	
 	handle_exit: function(){
 		if (document.fullscreenElement === null){
-			abort_trial();
+			trial.abort();
 			fullscreen.ask_for_fullscreen();
 		}
 	},
