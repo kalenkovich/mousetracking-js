@@ -1,33 +1,54 @@
 trial = {	
 	setup: function(){
-		$('#start').click(function(){trial.start()});
+		trial.add_all();
+		$('#start-button').click(function(){trial.start()});
 		$('.response-div').click(function(){trial.stop()});
 		fullscreen.enforce_fullscreen();
+		start_button.show();
+	},
+	
+	add_all: function(){
+		frame.add();
+		audio.add();
+		response_options.add();
+		start_button.add();
+	},
+	
+	show_all: function(){
+		// except the start button
+		frame.show();
+		audio.load();
+		response_options.show();
+		start_button.hide();
+	},
+	
+	hide_all: function(){
+		// except the start button
+		frame.hide();
+		// audio.stop();
+		response_options.hide();
+		start_button.show();
 	},
 	
 	start: function(){
-		$('#start').prop("disabled", true);
-		$('#right').prop("disabled", false);
+		$('#start-button').prop("disabled", true);
+		$('.response-div').prop("disabled", false);
 		mousetracking.start_tracking();
-		frame.add();
-		frame.show();
-		audio.add();
-		audio.load();
-		response_options.add();
-		response_options.show();
+		trial.show_all();
 	},
 	
 	abort: function(){
 		$('.response-div').prop("disabled", true);
-		$('#start').prop("disabled", false);
+		$('#start-button').prop("disabled", false);
 		mousetracking.reset();
-		frame.hide();
+		trial.hide_all();
 	},
 	
 	stop: function(){
 		$('.response-div').prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.stop_tracking();	
+		$('#start-button').prop("disabled", false);
+		mousetracking.stop_tracking();
+		trial.hide_all();
 	},
 	
 	debug: function(){
@@ -147,6 +168,41 @@ response_options = {
 	
 	hide: function(){
 		$('.response-div').css('visibility', 'hidden');
+	},
+	
+}
+
+start_button = {
+	add: function(){
+		id = 'start-button';
+		if ($('#' + id).length){return};
+		div = document.createElement('div');
+		div.className = 'bottom-center-of-the-screen';
+		div.id = id;
+		div.style.height = "10vh"; 
+		div.style.width = "20vw";
+		div.innerHTML = "Start";
+		div.style.fontSize = "5vh";
+		// Center text horizontally and vertically
+		div.style.textAlign = "center";
+		div.style.verticalAlign = "middle";
+		div.style.lineHeight = div.style.height;
+		
+		// Add a border
+		div.style.borderWidth = "3px";
+		div.style.borderStyle = 'solid'; 
+		div.style.borderColor = 'brown';
+		
+		div.style.visibility = 'hidden';
+		document.body.appendChild(div);
+	},
+	
+	show: function(){
+		$('#start-button').css('visibility', 'visible');
+	},
+	
+	hide: function(){
+		$('#start-button').css('visibility', 'hidden');
 	},
 	
 }
