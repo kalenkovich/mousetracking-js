@@ -1,4 +1,16 @@
-trial = {	
+trial = {
+	uris: {
+		left: 'images/acorn.png',
+		right: 'images/axe.png',
+		audio: 'this-time_positive_bottom.wav',
+		frame_images: [
+			'images/acorn.png',
+			null,
+			'images/axe.png',
+			null
+		]
+	},
+	
 	setup: function(){
 		trial.add_all();
 		$('#start-button').click(function(){trial.start()});
@@ -127,7 +139,7 @@ audio = {
 	
 	load: function(){
 		audio_element = $('#audio').get(0);
-		audio_element.src = "this-time_positive_bottom.wav";
+		audio_element.src = trial.uris.audio;
 		audio_element.addEventListener('canplaythrough', audio.play);
 		audio_element.load();
 	},
