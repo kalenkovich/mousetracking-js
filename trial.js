@@ -11,6 +11,8 @@ trial = {
 		mousetracking.start_tracking();
 		frame.add();
 		frame.show();
+		audio.add();
+		audio.load();
 	},
 	
 	abort: function(){
@@ -89,4 +91,26 @@ frame = {
 	hide: function(){
 		$('#frame-div').css('visibility', 'hidden');
 	},
+}
+
+audio = {
+	add: function(){
+		if ($('#audio').length){return};
+		const audio_element = document.createElement('audio');
+		audio_element.id = 'audio';
+		audio_element.style.visibility = 'hidden';
+		document.body.appendChild(audio_element);
+	},
+	
+	load: function(){
+		audio_element = $('#audio').get(0);
+		audio_element.src = "this-time_positive_bottom.wav";
+		audio_element.addEventListener('canplaythrough', audio.play);
+		audio_element.load();
+	},
+	
+	play: function(){
+		audio_element = $('#audio').get(0);
+		audio_element.play();
+	}
 }
