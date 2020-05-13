@@ -40,10 +40,10 @@ frame = {
 		// In the offline version,
 		// the frame had ~17 px borders and ~220 px square cells,
 		// the screen resolution was 1920x780
-		window_width = $(window).width();
-		width_ratio = window_width / 1920
-		border = Math.round(17 * width_ratio);
-		cell_side = Math.round(210 * width_ratio);
+		// returns cell side and border width as percentages of the width
+		percent_per_pixel = 100 / 1920;
+		border = 17 * percent_per_pixel;
+		cell_side = 210 * percent_per_pixel;
 		return [cell_side, border];
 	},
 	
@@ -78,9 +78,9 @@ frame = {
 		
 		[cell_side, border] = frame.calculate_sizes();
 		$('td.frame').css({
-			'height': cell_side + 'px',
-			'width': cell_side + 'px',
-			'border-width': border + 'px',
+			'height': cell_side + 'vw',
+			'width': cell_side + 'vw',
+			'border-width': border + 'vw',
 			'border-style': 'solid', 
 			'border-color': 'brown'
 		});
