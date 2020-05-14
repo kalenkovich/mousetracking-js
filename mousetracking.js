@@ -29,7 +29,8 @@ var mousetracking = {
 	start_tracking: function(){
 		console.log('Started tracking');
 		mousetracking.trajectory = [];
-		fake_cursor.turn_on(mousetracking.add_current_coordinates);
+		fake_cursor.turn_on();
+		fake_cursor.hide();
 	},
 	
 	stop_tracking: function(){
@@ -48,6 +49,10 @@ var mousetracking = {
 	reset: function(){
 		mousetracking.trajectory = [];
 		fake_cursor.turn_off();
+	},
+	
+	release_cursor: function(){
+		fake_cursor.release(mousetracking.add_current_coordinates);
 	}
 	
 }
@@ -67,9 +72,8 @@ var fake_cursor = {
 		doc_elem.requestPointerLock();
 	},
 	
-	draw: function(){
+	add: function(){
 		if ($('#cursor-img').length){
-			$('#cursor-img').get(0).style.visibility = 'visible';
 			return;
 		};
 		
@@ -83,7 +87,7 @@ var fake_cursor = {
 		cursor_img.style.position = "absolute";
 		cursor_img.style.left = "50%";
 		cursor_img.style.bottom = "0%";
-		cursor_img.style.visibility = 'visible';		
+		cursor_img.style.visibility = 'hidden';		
 		document.body.appendChild(cursor_img);
 	},
 	
@@ -105,15 +109,19 @@ var fake_cursor = {
 		window.addEventListener("mouseup", fake_cursor.click); 
 	},
 	
-	turn_on: function(mouseMoveCallback){
-		// mouseMoveCallback - function that will be bound to the `mousemove` event.
-		// We save it here so that we can unbind it later.
-		fake_cursor.mouseMoveCallback = mouseMoveCallback;
+	turn_on: function(){
 		fake_cursor.reset_position();
 		fake_cursor.lock_pointer();
 		fake_cursor.add_event_listener(fake_cursor.handle_pointer_unlocking);
-		fake_cursor.draw();
+		fake_cursor.add();
 		fake_cursor.redraw();
+	},
+	
+	release: function(mouseMoveCallback){
+		// mouseMoveCallback - function that will be bound to the `mousemove` event.
+		// We save it here so that we can unbind it later.
+		fake_cursor.mouseMoveCallback = mouseMoveCallback;
+		fake_cursor.show();
 		fake_cursor.let_user_move();
 		$(document).mousemove(mouseMoveCallback);
 		fake_cursor.let_user_click();
@@ -134,6 +142,13 @@ var fake_cursor = {
 		cursor_img = $('#cursor-img').get(0);
 		if (cursor_img){
 			cursor_img.style.visibility = 'hidden';
+		};
+	},
+	
+	show: function(){
+		cursor_img = $('#cursor-img').get(0);
+		if (cursor_img){
+			cursor_img.style.visibility = 'visible';
 		};
 	},
 	

@@ -11,12 +11,15 @@ trial = {
 		]
 	},
 	
+	timing: {
+		frame: 1500,  // time to remember the objects
+		audio: 1160,  // time until the disambiguation point
+	},
+	
 	setup: function(){
 		trial.add_all();
-		$('#start-button').click(function(){trial.start()});
-		$('.response-div').click(function(){trial.stop()});
+		trial.promise_to_load_all().then(start_button.show);
 		fullscreen.enforce_fullscreen();
-		start_button.show();
 	},
 	
 	add_all: function(){
@@ -26,12 +29,12 @@ trial = {
 		start_button.add();
 	},
 	
-	show_all: function(){
-		// except the start button
-		frame.show();
-		audio.load();
-		response_options.show();
-		start_button.hide();
+	promise_to_load_all: function(){
+		load_promises = [
+			response_options.promise_to_load_images(),
+			frame.promise_to_load_images(),
+			audio.promise_to_load()];
+		return Promise.all(load_promises);
 	},
 	
 	hide_all: function(){
@@ -43,12 +46,31 @@ trial = {
 	},
 	
 	start: function(){
-		response_options.draw_images();
-		frame.draw_images();
 		$('#start-button').prop("disabled", true);
 		$('.response-div').prop("disabled", false);
+		start_button.hide();
 		mousetracking.start_tracking();
-		trial.show_all();
+		trial.run();
+	},
+	
+	run: function(){
+		// show frame
+		frame.show();
+		window.setTimeout(
+			function(){
+				// hide frame, start playing audio
+				frame.hide();
+				audio.play();
+				window.setTimeout(
+					function(){
+						// show options and release the cursor
+						response_options.show();
+						mousetracking.release_cursor();
+					},
+				trial.timing.audio)
+			}, 
+		
+		trial.timing.frame)
 	},
 	
 	abort: function(){
@@ -68,6 +90,17 @@ trial = {
 	debug: function(){
 	    fullscreen.stop_enforcing_fullscreen();
 	}
+}
+
+function promise_to_load_image(img_element, uri){
+	return new Promise((resolve, reject) => {
+		img_element.onload = function(){
+			console.log(uri + ' loaded');
+			resolve();
+		};
+		img_element.onerror = reject;
+		img_element.src = uri;
+	 });
 }
 
 frame = {
@@ -121,12 +154,14 @@ frame = {
 		});
 	},
 	
-	draw_images: function(){
+	promise_to_load_images: function(){
+		var promises = [];
 		for (var i = 0; i < 4; i++){
 			uri = trial.uris.frame_images[i];
 			img_element = $('#image-' + i).get(0);
-			if (uri !== null) {img_element.src = uri};
+			if (uri !== null) {promises.push(promise_to_load_image(img_element, uri))};
 		}
+		return Promise.all(promises);
 	},
 	
 	show: function(){
@@ -147,11 +182,17 @@ audio = {
 		document.body.appendChild(audio_element);
 	},
 	
-	load: function(){
+	promise_to_load: function(){
 		audio_element = $('#audio').get(0);
-		audio_element.src = trial.uris.audio;
-		audio_element.addEventListener('canplaythrough', audio.play);
-		audio_element.load();
+		return new Promise((resolve, reject) => {
+			audio_element.oncanplaythrough = function(){
+				console.log('audio loaded');
+				resolve();
+			};
+			audio_element.onerror = reject;
+			audio_element.src = trial.uris.audio;
+			audio_element.load();
+		});
 	},
 	
 	play: function(){
@@ -183,6 +224,9 @@ response_options = {
 		// Add image
 		div.innerHTML = '<img class = "as-large-as-fits" id=' + id + '-img></img>';
 		
+		// Stop trial on click
+		div.onclick = function(){trial.stop()};
+		
 		document.body.appendChild(div);
 	},
 	
@@ -191,9 +235,12 @@ response_options = {
 		response_options.add_response('right');
 	},
 	
-	draw_images: function(){
-		$('#response-left-img').get(0).src = trial.uris.left;
-		$('#response-right-img').get(0).src = trial.uris.right;
+	promise_to_load_images: function(){
+		var promises = [	
+			promise_to_load_image($('#response-left-img').get(0), trial.uris.left),
+			promise_to_load_image($('#response-right-img').get(0), trial.uris.right)
+		]
+		return Promise.all(promises);
 	},
 	
 	show: function(){
@@ -228,7 +275,10 @@ start_button = {
 		div.style.borderColor = 'brown';
 		
 		// Add solid background
-		div.style.backgroundColor = 'white'
+		div.style.backgroundColor = 'white';
+		
+		// Start on click
+		div.onclick = function(){trial.start()};
 		
 		div.style.visibility = 'hidden';
 		document.body.appendChild(div);
