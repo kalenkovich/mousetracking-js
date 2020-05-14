@@ -43,6 +43,8 @@ trial = {
 	},
 	
 	start: function(){
+		response_options.draw_images();
+		frame.draw_images();
 		$('#start-button').prop("disabled", true);
 		$('.response-div').prop("disabled", false);
 		mousetracking.start_tracking();
@@ -90,18 +92,18 @@ frame = {
 			<table class="frame">
 				<tr>
 					<td class="frame">
-						<img id="image-1"></img>
+						<img class = "as-large-as-fits" id="image-0"></img>
 					</td>
 					<td class="frame">
-						<img id="image-2"></img>
+						<img class = "as-large-as-fits" id="image-1"></img>
 					</td>
 				</tr>
 				<tr>
 					<td class="frame">
-						<img id="image-3"></img>
+						<img class = "as-large-as-fits" id="image-2"></img>
 					</td>
 					<td class="frame">
-						<img id="image-4"></img>
+						<img class = "as-large-as-fits" id="image-3"></img>
 					</td>
 				</tr>
 			</table>
@@ -117,6 +119,14 @@ frame = {
 			'border-style': 'solid', 
 			'border-color': 'brown'
 		});
+	},
+	
+	draw_images: function(){
+		for (var i = 0; i < 4; i++){
+			uri = trial.uris.frame_images[i];
+			img_element = $('#image-' + i).get(0);
+			if (uri !== null) {img_element.src = uri};
+		}
 	},
 	
 	show: function(){
@@ -170,12 +180,20 @@ response_options = {
 		// Add solid background
 		div.style.backgroundColor = 'white'
 		
+		// Add image
+		div.innerHTML = '<img class = "as-large-as-fits" id=' + id + '-img></img>';
+		
 		document.body.appendChild(div);
 	},
 	
 	add: function(){
 		response_options.add_response('left');
 		response_options.add_response('right');
+	},
+	
+	draw_images: function(){
+		$('#response-left-img').get(0).src = trial.uris.left;
+		$('#response-right-img').get(0).src = trial.uris.right;
 	},
 	
 	show: function(){
