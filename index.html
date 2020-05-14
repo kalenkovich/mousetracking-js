@@ -2,48 +2,7 @@
 <script src="mousetracking.js"></script>
 <script src="fullscreen.js"></script>
 <link rel="stylesheet" type="text/css" href="fullscreen.css">
-
-<button style="position: absolute; left: 50%; right: 50%; bottom: 0%; 
-               height:10%; width: 20%; transform: translateX(-50%);"
-		id="start">
-	Start
-</button>
-<button style="position: absolute; left: 80%; right: 0%; top: 0%;
-               height:20%; width: 20%; "
-		id="right">
-	Right
-</button>
-
-<script>
-	$( document ).ready(function() {
-		$('#start').click(function(){start_trial()});
-		$('#right').click(function(){stop_trial()});
-		fullscreen.enforce_fullscreen();
-	});
-	
-	function start_trial(){
-		$('#start').prop("disabled", true);
-		$('#right').prop("disabled", false);
-		mousetracking.start_tracking();
-	}
-	
-	function abort_trial(){
-		$('#right').prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.reset();
-	};
-	
-	function stop_trial(){
-		$('#right').prop("disabled", true);
-		$('#start').prop("disabled", false);
-		mousetracking.stop_tracking();	
-	}
-	
-	function debug() {
-	    fullscreen.stop_enforcing_fullscreen();
-	}
-
-</script>
+<link rel="stylesheet" type="text/css" href="trial.css">
 
 <!-- From solution here: https://stackoverflow.com/a/44328113/3042770 -->
 <div class="backdrop">
@@ -54,3 +13,5 @@
     <button id="btn-go-fullscreen">Switch to fullscreen</button
   </div>
 </div>
+
+<script src="trial.js" onload ="trial.setup()"></script>

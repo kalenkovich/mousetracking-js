@@ -22,7 +22,7 @@ var mousetracking = {
 	
 	handle_pointer_unlocking: function(){
 		if (document.pointerLockElement === null){
-			abort_trial();
+			trial.abort();
 		};
 	},
 	
