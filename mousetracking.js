@@ -48,6 +48,10 @@ var mousetracking = {
 	reset: function(){
 		mousetracking.trajectory = [];
 		fake_cursor.turn_off();
+	},
+	
+	release_cursor(){
+		console.log('Cursor locking is not yet implemented');
 	}
 	
 }

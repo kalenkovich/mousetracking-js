@@ -11,6 +11,11 @@ trial = {
 		]
 	},
 	
+	timing: {
+		frame: 1500,  // time to remember the objects
+		audio: 1160,  // time until the disambiguation point
+	},
+	
 	setup: function(){
 		trial.add_all();
 		trial.promise_to_load_all().then(start_button.show);
@@ -32,14 +37,6 @@ trial = {
 		return Promise.all(load_promises);
 	},
 	
-	show_all: function(){
-		// except the start button
-		frame.show();
-		audio.play();
-		response_options.show();
-		start_button.hide();
-	},
-	
 	hide_all: function(){
 		// except the start button
 		frame.hide();
@@ -52,7 +49,27 @@ trial = {
 		$('#start-button').prop("disabled", true);
 		$('.response-div').prop("disabled", false);
 		mousetracking.start_tracking();
-		trial.show_all();
+		trial.run();
+	},
+	
+	run: function(){
+		// show frame
+		frame.show();
+		window.setTimeout(
+			function(){
+				// hide frame, start playing audio
+				frame.hide();
+				audio.play();
+				window.setTimeout(
+					function(){
+						// show options and release the cursor
+						response_options.show();
+						mousetracking.release_cursor();
+					},
+				trial.timing.audio)
+			}, 
+		
+		trial.timing.frame)
 	},
 	
 	abort: function(){
