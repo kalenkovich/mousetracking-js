@@ -48,6 +48,7 @@ trial = {
 	start: function(){
 		$('#start-button').prop("disabled", true);
 		$('.response-div').prop("disabled", false);
+		start_button.hide();
 		mousetracking.start_tracking();
 		trial.run();
 	},
