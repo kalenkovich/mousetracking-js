@@ -14,8 +14,6 @@ trial = {
 	setup: function(){
 		trial.add_all();
 		trial.promise_to_load_all().then(start_button.show);
-		$('#start-button').click(function(){trial.start()});
-		$('.response-div').click(function(){trial.stop()});
 		fullscreen.enforce_fullscreen();
 	},
 	
@@ -208,6 +206,9 @@ response_options = {
 		// Add image
 		div.innerHTML = '<img class = "as-large-as-fits" id=' + id + '-img></img>';
 		
+		// Stop trial on click
+		div.onclick = function(){trial.stop()};
+		
 		document.body.appendChild(div);
 	},
 	
@@ -256,7 +257,10 @@ start_button = {
 		div.style.borderColor = 'brown';
 		
 		// Add solid background
-		div.style.backgroundColor = 'white'
+		div.style.backgroundColor = 'white';
+		
+		// Start on click
+		div.onclick = function(){trial.start()};
 		
 		div.style.visibility = 'hidden';
 		document.body.appendChild(div);
