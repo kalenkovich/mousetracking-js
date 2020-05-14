@@ -13,6 +13,7 @@ trial = {
 	
 	setup: function(){
 		trial.add_all();
+		trial.load_all();
 		$('#start-button').click(function(){trial.start()});
 		$('.response-div').click(function(){trial.stop()});
 		fullscreen.enforce_fullscreen();
@@ -26,10 +27,16 @@ trial = {
 		start_button.add();
 	},
 	
+	load_all: function(){
+		response_options.draw_images();
+		frame.draw_images();
+		audio.load();
+	},
+	
 	show_all: function(){
 		// except the start button
 		frame.show();
-		audio.load();
+		audio.play();
 		response_options.show();
 		start_button.hide();
 	},
@@ -43,8 +50,6 @@ trial = {
 	},
 	
 	start: function(){
-		response_options.draw_images();
-		frame.draw_images();
 		$('#start-button').prop("disabled", true);
 		$('.response-div').prop("disabled", false);
 		mousetracking.start_tracking();
@@ -150,7 +155,6 @@ audio = {
 	load: function(){
 		audio_element = $('#audio').get(0);
 		audio_element.src = trial.uris.audio;
-		audio_element.addEventListener('canplaythrough', audio.play);
 		audio_element.load();
 	},
 	
